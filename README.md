@@ -2,25 +2,17 @@
 
 Um projeto clone da plataforma https://www.tabnews.com.br/ desenvolvido nas aulas do curso.dev.
 
-## Developing
+# Antes de começar a desenvolver
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Certifique-se de que sua versão local do node esteja de acordo com a configurada no `.nvmrc`.
 
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
+Se você estiver em um ambiente que suporta oficialmente o software `Node Version Manager`, rode os comandos:
 
 ```bash
-npm run build
+# Para instalar a versão caso já não esteja instalada
+nvm install
+# Para usar a versão encontrara no .nvmrc
+nvm use
 ```
 
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+Para usuários de Windows, é possível baixar o [nvm-windows](https://github.com/coreybutler/nvm-windows), porem, ele não possui as mesmas funcionalidades do que o `nvm`.
