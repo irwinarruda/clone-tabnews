@@ -1,0 +1,7 @@
+# podem existir mais de um editorconfig no projeto.
+root = true
+
+# [*] significa todos os arquivos
+[*]
+indent_style = space
+indent_size = 2
