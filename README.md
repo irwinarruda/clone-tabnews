@@ -16,3 +16,22 @@ nvm use
 ```
 
 Para usuários de Windows, é possível baixar o [nvm-windows](https://github.com/coreybutler/nvm-windows), porem, ele não possui as mesmas funcionalidades do que o `nvm`.
+
+# Rodando o projeto
+
+Para acessar o projeto, é necessário rodar os seguintes comandos:
+
+```bash
+# Para instalar as dependências na pasta node_modules
+pnpm install
+# Para rodar o projeto em modo de desenvolvimento
+pnpm dev
+```
+
+# Status dos serviços
+
+Caso aconteça algum problema estranho em qualquer uma das etapas do desenvolvimento, verifique as **Status Pages** dos principais serviços que são utilizados nesse projeto:
+
+- Vercel: https://www.vercel-status.com/
+- AWS: https://health.aws.amazon.com/health/status
+- GitHub: https://www.githubstatus.com/
