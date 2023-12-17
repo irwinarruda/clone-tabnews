@@ -1,8 +1,8 @@
 import { env } from '$env/dynamic/private';
-import { Client, ClientBase } from 'pg';
+import * as db from 'pg';
 
 const query = async function (queryObject: any) {
-	const client = new Client({
+	const client = new db.Client({
 		host: env.POSTGRES_HOST,
 		port: Number(env.POSTGRES_PORT),
 		user: env.POSTGRES_USER,
@@ -13,7 +13,7 @@ const query = async function (queryObject: any) {
 	const result = await client.query(queryObject);
 	await client.end();
 	return result;
-} as ClientBase['query'];
+} as db.ClientBase['query'];
 
 export default {
 	query
