@@ -4,13 +4,16 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "dev": "vite dev",
+    "dev": "pnpm services:up && vite dev",
     "build": "vite build",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "lint:check": "prettier --plugin-search-dir . --check . && eslint .",
     "lint:fix": "prettier --plugin-search-dir . --write .",
+    "services:up": "docker compose -f ./infra/compose.yaml up -d",
+    "services:down": "docker compose -f ./infra/compose.yaml down",
+    "services:stop": "docker compose -f ./infra/compose.yaml stop",
     "test": "jest",
     "test:watch": "jest --watch"
   },
