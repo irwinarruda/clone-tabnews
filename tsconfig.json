@@ -4,6 +4,7 @@
     "allowJs": true,
     "checkJs": true,
     "esModuleInterop": true,
+    "noImplicitAny": false,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,

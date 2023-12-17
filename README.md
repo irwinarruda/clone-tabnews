@@ -35,3 +35,20 @@ Caso aconteça algum problema estranho em qualquer uma das etapas do desenvolvim
 - Vercel: https://www.vercel-status.com/
 - AWS: https://health.aws.amazon.com/health/status
 - GitHub: https://www.githubstatus.com/
+
+# Anotações
+
+Alguns dos comandos do docker são:
+
+```bash
+docker --version
+docker-compose --version
+docker ps -a
+# docker ps --all
+# -f do arquivo e -d (detatched) --force-recreate (quando precisa atualizar)
+docker compose -f ./infra/compose.yaml up -d --force-recreate
+docker compose down
+docker logs {CONTAINER ID}
+# Conectar no psql username é o padrão do Dockerfile
+psql --host=localhost --username=postgres --port=5432
+```
