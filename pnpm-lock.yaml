@@ -28,6 +28,9 @@ devDependencies:
   '@typescript-eslint/parser':
     specifier: ^5.45.0
     version: 5.59.2(eslint@8.40.0)(typescript@5.0.4)
+  dotenv:
+    specifier: ^16.3.1
+    version: 16.3.1
   eslint:
     specifier: ^8.28.0
     version: 8.40.0
@@ -52,6 +55,9 @@ devDependencies:
   svelte-check:
     specifier: ^3.0.1
     version: 3.3.1(@babel/core@7.22.11)(postcss@8.4.23)(svelte@3.59.0)
+  svelte-jester:
+    specifier: ^3.0.0
+    version: 3.0.0(jest@29.6.2)(svelte@3.59.0)
   svelte-preprocess:
     specifier: ^5.0.4
     version: 5.0.4(@babel/core@7.22.11)(postcss@8.4.23)(svelte@3.59.0)(typescript@5.0.4)
@@ -1785,6 +1791,11 @@ packages:
     engines: {node: '>=6.0.0'}
     dependencies:
       esutils: 2.0.3
+    dev: true
+
+  /dotenv@16.3.1:
+    resolution: {integrity: sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==}
+    engines: {node: '>=12'}
     dev: true
 
   /electron-to-chromium@1.4.496:
@@ -3899,6 +3910,17 @@ packages:
     peerDependencies:
       svelte: '>=3.19.0'
     dependencies:
+      svelte: 3.59.0
+    dev: true
+
+  /svelte-jester@3.0.0(jest@29.6.2)(svelte@3.59.0):
+    resolution: {integrity: sha512-V279cL906++hn00hkL1xAr/y5OjjxPYWic1g0yTJFmqdbdWKthdcuP3XBvmmwP9AzFBT51DlPgXz56HItle1Ug==}
+    engines: {node: '>=16', pnpm: ^8.0.0}
+    peerDependencies:
+      jest: '>= 27'
+      svelte: '>= 3'
+    dependencies:
+      jest: 29.6.2
       svelte: 3.59.0
     dev: true
 
