@@ -11,7 +11,8 @@ const query = async function (queryObject: any, option1?: any) {
 		port: Number(env.POSTGRES_PORT),
 		user: env.POSTGRES_USER,
 		database: env.POSTGRES_DB,
-		password: env.POSTGRES_PASSWORD
+		password: env.POSTGRES_PASSWORD,
+		ssl: env.NODE_ENV !== 'development'
 	});
 	try {
 		await client.connect();
@@ -28,7 +29,8 @@ const sql = async function (literal: TemplateStringsArray, ...params: any) {
 		port: Number(env.POSTGRES_PORT),
 		user: env.POSTGRES_USER,
 		database: env.POSTGRES_DB,
-		password: env.POSTGRES_PASSWORD
+		password: env.POSTGRES_PASSWORD,
+		ssl: env.NODE_ENV !== 'development'
 	});
 	try {
 		await client.connect();
