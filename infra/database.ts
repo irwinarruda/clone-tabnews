@@ -1,5 +1,5 @@
 import { env } from '$env/dynamic/private';
-import * as db from 'pg';
+import db from 'pg';
 
 const sqlJoin = function <T extends string[] | ReadonlyArray<string>>(str: T) {
 	return str.reduce((acc, part, i) => acc + part + (i !== str.length - 1 ? `$${i + 1}` : ''), '');
