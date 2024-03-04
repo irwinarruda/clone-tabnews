@@ -1,0 +1,6 @@
+{
+	"name": "clone-tabnews-migrations",
+	"version": "0.0.0",
+	"description": "Migrations for clone-tabnews until node-pg-migrate supports TypeScript",
+	"type": "commonjs"
+}

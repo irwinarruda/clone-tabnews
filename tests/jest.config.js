@@ -2,6 +2,7 @@
 export default {
 	preset: 'ts-jest',
 	testEnvironment: 'node',
+	rootDir: '..',
 	transform: {
 		'^.+\\.svelte$': [
 			'svelte-jester',

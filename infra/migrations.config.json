@@ -1,0 +1,5 @@
+{
+	"migration-filename-format": "utc",
+	"migrations-dir": "./infra/migrations",
+	"tsconfig": "./infra/tsconfig.migrations.json"
+}
