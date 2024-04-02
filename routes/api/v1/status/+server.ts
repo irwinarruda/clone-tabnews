@@ -1,7 +1,7 @@
+import { env } from '$env/dynamic/private';
 import { json } from '@sveltejs/kit';
 import database from '~/infra/database';
 import type { RequestHandler } from './$types';
-import { env } from '$env/dynamic/private';
 
 export type GetStatusResponse = {
 	updated_at: string;
