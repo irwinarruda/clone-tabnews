@@ -1,9 +1,10 @@
 import { env } from '$env/dynamic/private';
 import { json } from '@sveltejs/kit';
-import migrationRunner from 'node-pg-migrate/dist/runner';
+import * as m from 'node-pg-migrate';
 import path from 'node:path';
 import database from '~/infra/database';
 import type { RequestHandler } from './$types';
+const migrationRunner = m.default;
 
 const config = {
 	databaseUrl: env.DATABASE_URL,
