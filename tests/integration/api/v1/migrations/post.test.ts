@@ -9,12 +9,13 @@ async function cleanDatabase() {
 
 beforeAll(cleanDatabase);
 
-test('GET to /api/v1/migrations should return 200', async function () {
-	const response = await fetch('http://localhost:5173/api/v1/migrations');
-	expect(response.status).toBe(200);
+test('POST to /api/v1/migrations should return 201 and run the migrations', async function () {
+	const response = await fetch('http://localhost:5173/api/v1/migrations', { method: 'POST' });
+	expect(response.status).toBe(201);
 	const body = await response.json();
 	expect(Array.isArray(body)).toBe(true);
 	expect(body.length).toBeGreaterThan(0);
+
 	const dirs = await fs.readdir(path.join('infra', 'migrations'));
 	expect(dirs.length).toBeGreaterThan(0);
 	for (const index in dirs) {
@@ -25,4 +26,10 @@ test('GET to /api/v1/migrations should return 200', async function () {
 		expect(body[index]).toHaveProperty('name');
 		expect(body[index].name).toBe(fileName);
 	}
+
+	const secondResponse = await fetch('http://localhost:5173/api/v1/migrations', { method: 'POST' });
+	expect(secondResponse.status).toBe(200);
+	const secondBody = await secondResponse.json();
+	expect(Array.isArray(secondBody)).toBe(true);
+	expect(secondBody.length).toEqual(0);
 });

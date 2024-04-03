@@ -14,7 +14,7 @@ const getSSLValues = function () {
 	return env.NODE_ENV === 'production';
 };
 
-const query = async function (queryObject: any, option1?: any) {
+const getNewClient = async function () {
 	const client = new db.Client({
 		host: env.POSTGRES_HOST,
 		port: Number(env.POSTGRES_PORT),
@@ -23,12 +23,20 @@ const query = async function (queryObject: any, option1?: any) {
 		password: env.POSTGRES_PASSWORD,
 		ssl: getSSLValues()
 	});
+	await client.connect();
+	return client;
+};
+
+const query = async function (queryObject: any, option1?: any) {
+	let client: db.Client;
 	try {
-		await client.connect();
+		client = await getNewClient();
 		const result = await client.query(queryObject, option1);
 		return result;
+	} catch (err) {
+		console.log(err);
 	} finally {
-		await client.end();
+		await client!.end();
 	}
 } as db.ClientBase['query'];
 
@@ -38,5 +46,6 @@ const sql = async function (literal: TemplateStringsArray, ...params: any) {
 
 export default {
 	query,
-	sql
+	sql,
+	getNewClient
 };
