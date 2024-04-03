@@ -1,5 +1,8 @@
 import { env } from '$env/dynamic/private';
+import nm from 'node-pg-migrate';
 import db from 'pg';
+
+const migrationRunner = (nm as any).default as typeof nm;
 
 const sqlJoin = function <T extends string[] | ReadonlyArray<string>>(str: T) {
 	return str.reduce((acc, part, i) => acc + part + (i !== str.length - 1 ? `$${i + 1}` : ''), '');
@@ -47,5 +50,6 @@ const sql = async function (literal: TemplateStringsArray, ...params: any) {
 export default {
 	query,
 	sql,
-	getNewClient
+	getNewClient,
+	migrationRunner
 };

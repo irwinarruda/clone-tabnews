@@ -1,10 +1,8 @@
 import { env } from '$env/dynamic/private';
 import { json } from '@sveltejs/kit';
-import * as m from 'node-pg-migrate';
 import path from 'node:path';
 import database from '~/infra/database';
 import type { RequestHandler } from './$types';
-const migrationRunner = m.default;
 
 const config = {
 	databaseUrl: env.DATABASE_URL,
@@ -17,7 +15,7 @@ const config = {
 export const GET: RequestHandler = async function () {
 	const client = await database.getNewClient();
 	try {
-		const pendingMigrations = await migrationRunner({
+		const pendingMigrations = await database.migrationRunner({
 			...config,
 			dbClient: client,
 			dryRun: true
@@ -33,7 +31,7 @@ export const GET: RequestHandler = async function () {
 export const POST: RequestHandler = async function () {
 	const client = await database.getNewClient();
 	try {
-		const migratedMigrations = await migrationRunner({
+		const migratedMigrations = await database.migrationRunner({
 			...config,
 			dbClient: client,
 			dryRun: false

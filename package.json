@@ -6,8 +6,9 @@
 	"scripts": {
 		"dev:local": "pnpm services:up && vite dev",
 		"dev": "vite dev",
-		"build": "vite build",
-		"preview": "vite preview",
+		"build": "NODE_ENV=development vite build",
+		"preview": "NODE_ENV=development vite preview",
+		"build:local": "NODE_ENV=development vite build && pnpm preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint:check": "prettier --plugin-search-dir . --check . && eslint .",
