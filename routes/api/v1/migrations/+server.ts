@@ -22,8 +22,8 @@ export const GET: RequestHandler = async function () {
 			dryRun: true
 		});
 		return json(pendingMigrations, { status: 200 });
-	} catch (_) {
-		return json(undefined, { status: 500 });
+	} catch (err: any) {
+		return json(err.message, { status: 500 });
 	} finally {
 		await client.end();
 	}
