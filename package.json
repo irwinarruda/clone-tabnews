@@ -9,6 +9,8 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write .",
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
@@ -18,5 +20,8 @@
     "nuxt": "^3.17.1",
     "vue": "^3.5.13",
     "vue-router": "^4.5.1"
+  },
+  "devDependencies": {
+    "prettier": "^3.5.3"
   }
 }
