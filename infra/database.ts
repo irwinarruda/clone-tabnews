@@ -25,10 +25,13 @@ async function sql<R extends QueryResultRow = any, I = any[]>(
     database: serverEnv.PgDatabase,
     password: serverEnv.PgPassword,
   });
-  await client.connect();
-  const result = await client.query(parseTemplate(templateString), values);
-  await client.end();
-  return result;
+  try {
+    await client.connect();
+    const result = await client.query(parseTemplate(templateString), values);
+    return result;
+  } finally {
+    await client.end();
+  }
 }
 
 export default {
