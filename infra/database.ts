@@ -24,6 +24,7 @@ async function sql<R extends QueryResultRow = any, I = any[]>(
     user: serverEnv.PgUser,
     database: serverEnv.PgDatabase,
     password: serverEnv.PgPassword,
+    ssl: serverEnv.PgSSL,
   });
   try {
     await client.connect();
