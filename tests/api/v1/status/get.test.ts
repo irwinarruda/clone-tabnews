@@ -2,11 +2,10 @@ describe("get /api/v1/status", () => {
   let response: Response;
   let data: any;
   let database: any;
-  beforeEach(async () => {
+  beforeAll(async () => {
     response = await fetch("http://localhost:3000/api/v1/status");
     data = await response.json();
     database = data.dependencies.database;
-    // console.log("database", database);
   });
   test("should return status 200", async () => {
     expect(response.status).toBe(200);
