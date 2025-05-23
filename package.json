@@ -15,6 +15,9 @@
     "test:watch": "vitest --watch",
     "services:up": "docker compose -f infra/compose.yaml up -d",
     "services:down": "docker compose -f infra/compose.yaml down",
+    "migrations:create": "node-pg-migrate -m infra/migrations create",
+    "migrations:up": "node-pg-migrate -m infra/migrations up",
+    "migrations:down": "node-pg-migrate -m infra/migrations down",
     "clean": "rm -rf .nuxt .output node_modules",
     "postinstall": "nuxt prepare"
   },
@@ -30,7 +33,9 @@
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
+    "@types/node-pg-migrate": "^2.3.1",
     "@vue/test-utils": "^2.4.6",
+    "dotenv-expand": "^12.0.2",
     "prettier": "^3.5.3",
     "vitest": "^3.1.3"
   },

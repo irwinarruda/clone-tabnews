@@ -1,10 +1,15 @@
 /// <reference types="vitest/globals" />
+import { defineVitestConfig } from "@nuxt/test-utils/config";
 
-import { defineConfig } from "vitest/config";
-
-export default defineConfig({
+export default defineVitestConfig({
   test: {
     globals: true,
     setupFiles: ["dotenv/config"],
+    sequence: {
+      concurrent: false,
+    },
+    poolOptions: {
+      forks: { singleFork: true },
+    },
   },
 });

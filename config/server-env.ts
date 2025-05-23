@@ -5,4 +5,5 @@ export const serverEnv = {
   PgDatabase: import.meta.env.POSTGRES_DB,
   PgPassword: import.meta.env.POSTGRES_PASSWORD,
   PgSSL: import.meta.env.POSTGRES_SSL === "true",
+  PgDatabaseUrl: import.meta.env.DATABASE_URL,
 };

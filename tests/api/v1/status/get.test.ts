@@ -1,20 +1,20 @@
 describe("get /api/v1/status", () => {
   let response: Response;
-  let data: any;
+  let body: any;
   let database: any;
   beforeAll(async () => {
     response = await fetch("http://localhost:3000/api/v1/status");
-    data = await response.json();
-    database = data.dependencies.database;
+    body = await response.json();
+    database = body.dependencies.database;
   });
   test("should return status 200", async () => {
     expect(response.status).toBe(200);
   });
   test("should return updated_at", async () => {
     const isoRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
-    expect(data.updated_at).toBeDefined();
-    expect(data.updated_at).toMatch(isoRegex);
-    expect(data.updated_at).toBe(new Date(data.updated_at).toISOString());
+    expect(body.updated_at).toBeDefined();
+    expect(body.updated_at).toMatch(isoRegex);
+    expect(body.updated_at).toBe(new Date(body.updated_at).toISOString());
   });
   test("should return database version", async () => {
     expect(database.version).toBeDefined();
