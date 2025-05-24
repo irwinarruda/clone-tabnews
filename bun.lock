@@ -8,7 +8,7 @@
         "@nuxt/test-utils": "^3.18.0",
         "@types/pg": "^8.15.2",
         "eslint": "^9.0.0",
-        "node-pg-migrate": "^7.9.1",
+        "node-pg-migrate": "8.0.0-rc.0",
         "nuxt": "^3.17.1",
         "pg": "^8.15.6",
         "vue": "^3.5.13",
@@ -1268,7 +1268,7 @@
 
     "node-mock-http": ["node-mock-http@1.0.0", "", {}, "sha512-0uGYQ1WQL1M5kKvGRXWQ3uZCHtLTO8hln3oBjIusM75WoesZ909uQJs/Hb946i2SS+Gsrhkaa6iAO17jRIv6DQ=="],
 
-    "node-pg-migrate": ["node-pg-migrate@7.9.1", "", { "dependencies": { "glob": "~11.0.0", "yargs": "~17.7.0" }, "peerDependencies": { "@types/pg": ">=6.0.0 <9.0.0", "pg": ">=4.3.0 <9.0.0" }, "optionalPeers": ["@types/pg"], "bin": { "node-pg-migrate": "bin/node-pg-migrate.js", "node-pg-migrate-cjs": "bin/node-pg-migrate.js", "node-pg-migrate-esm": "bin/node-pg-migrate.mjs" } }, "sha512-6z4OSN27ye8aYdX9ZU7NN2PTI5pOp34hTr+22Ej12djIYECq++gT7LPLZVOQXEeVCBOZQLqf87kC3Y36G434OQ=="],
+    "node-pg-migrate": ["node-pg-migrate@8.0.0-rc.0", "", { "dependencies": { "glob": "~11.0.0", "yargs": "~17.7.0" }, "peerDependencies": { "@types/pg": ">=6.0.0 <9.0.0", "pg": ">=4.3.0 <9.0.0" }, "optionalPeers": ["@types/pg"], "bin": { "node-pg-migrate": "bin/node-pg-migrate.js" } }, "sha512-DkP3OskRA2HLkz2O4pONii8rEVO6Y3lqYv8UpnD5mpar/PyBltYq0uDkEC/2uDYOqllLc44yYWWTjYOKmzp5+Q=="],
 
     "node-releases": ["node-releases@2.0.19", "", {}, "sha512-xxOWJsBKtzAq7DY0J+DTzuz58K8e7sJbdgwkbMWQe8UYB6ekmsQ45q0M/tJDsGaZmbC+l7n57UV8Hl5tHxO9uw=="],
 
