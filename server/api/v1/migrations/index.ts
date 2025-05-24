@@ -1,15 +1,15 @@
 import type { EventHandlerRequest, H3Event } from "h3";
 import pgMigrate from "node-pg-migrate";
 import type { MigrationDirection } from "node-pg-migrate/dist/types";
-import path from "path";
 import database from "~/infra/database";
+import resolve from "~/infra/resolve";
 
 async function migrate(dryRun: boolean, direction: MigrationDirection = "up") {
   const client = await database.getClient();
   try {
     const migrations = await pgMigrate({
       dbClient: client,
-      dir: path.join("infra", "migrations"),
+      dir: resolve("infra", "migrations"),
       migrationsTable: "pgmigrations",
       direction: direction,
       dryRun: dryRun,
