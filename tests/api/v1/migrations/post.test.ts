@@ -4,14 +4,12 @@ describe("post /api/v1/migrations", () => {
   let response: Response;
   let body: any;
   async function getResponse() {
-    return await fetch("http://localhost:3000/api/v1/migrations", {
-      method: "POST",
-    });
+    return fetch("http://localhost:3000/api/v1/migrations", { method: "POST" });
   }
   beforeAll(async () => {
     await database.sql`DROP SCHEMA public CASCADE; CREATE SCHEMA public;`;
   });
-  test("should return 200", async () => {
+  test("should return 201 if there are migrations", async () => {
     response = await getResponse();
     body = await response.json();
     expect(response.status).toBe(201);
