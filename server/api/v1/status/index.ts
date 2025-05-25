@@ -5,7 +5,7 @@ type ServerVersion = { server_version: string };
 type MaxConnections = { max_connections: string };
 type OpenedConnections = { count: string };
 
-export default defineEventHandler(async (_) => {
+async function onGet() {
   const version = await database.sql<ServerVersion>`SHOW server_version;`;
   const maxConnections =
     await database.sql<MaxConnections>`SHOW max_connections;`;
@@ -24,4 +24,13 @@ export default defineEventHandler(async (_) => {
       },
     },
   };
+}
+
+export default defineEventHandler(async (event) => {
+  switch (event.method) {
+    case "GET":
+      return onGet();
+    default:
+      return setResponseStatus(event, 404);
+  }
 });
