@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt dev",
+    "dev": "bun services:up && bun wait-for-postgres && bun migrations:up && nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "format": "prettier --check .",
@@ -19,7 +19,8 @@
     "migrations:up": "node-pg-migrate -m infra/migrations up",
     "migrations:down": "node-pg-migrate -m infra/migrations down",
     "clean": "rm -rf .nuxt .output node_modules",
-    "postbuild": "./scripts/postbuild.sh",
+    "wait-for-postgres": "node ./infra/scripts/wait-for-postgres.js",
+    "postbuild": "./infra/scripts/postbuild.sh",
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
