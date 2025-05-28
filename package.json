@@ -6,20 +6,22 @@
   "license": "MIT",
   "scripts": {
     "build": "nuxt build",
-    "dev": "bun services:up && bun wait-for-postgres && bun migrations:up && nuxt dev",
+    "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
-    "test": "vitest run",
+    "test": "concurrently -n nuxt,vitest -c red,blue --hide nuxt -k -s command-vitest \"nuxt dev\" \"vitest run\"",
     "test:watch": "vitest --watch",
     "services:up": "docker compose -f infra/compose.yaml up -d",
     "services:down": "docker compose -f infra/compose.yaml down",
+    "services:ready": "bun services:up && node ./infra/scripts/wait-for-postgres.js && bun migrations:up",
     "migrations:create": "node-pg-migrate -m infra/migrations create",
     "migrations:up": "node-pg-migrate -m infra/migrations up",
     "migrations:down": "node-pg-migrate -m infra/migrations down",
     "clean": "rm -rf .nuxt .output node_modules",
-    "wait-for-postgres": "node ./infra/scripts/wait-for-postgres.js",
+    "pretest": "bun services:ready",
+    "predev": "bun services:ready",
     "postbuild": "./infra/scripts/postbuild.sh",
     "postinstall": "nuxt prepare"
   },
@@ -37,6 +39,7 @@
   "devDependencies": {
     "@types/node-pg-migrate": "^2.3.1",
     "@vue/test-utils": "^2.4.6",
+    "concurrently": "^9.1.2",
     "dotenv-expand": "^12.0.2",
     "prettier": "^3.5.3",
     "vitest": "^3.1.3"

@@ -5,7 +5,7 @@ process.stdout.write("\n🟨 Waiting for postgres");
 function check() {
   function onDockerExec(_, stdout) {
     if (stdout.search("accepting connections") !== -1) {
-      console.log("\n\n✅ Postgres is accepting connections");
+      console.log("\n✅ Postgres is accepting connections\n");
       return;
     }
     setTimeout(check, 350);
