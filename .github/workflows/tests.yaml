@@ -1,0 +1,12 @@
+name: Automated Tests
+
+on: [push, pull_request]
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: cp .env.example .env
+      - run: bun install
+      - run: bun run test
