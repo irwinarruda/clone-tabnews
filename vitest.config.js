@@ -11,5 +11,7 @@ export default defineVitestConfig({
     poolOptions: {
       forks: { singleFork: true },
     },
+    testTimeout: 10000,
+    globalSetup: ["./tests/globalSetup.ts"],
   },
 });
