@@ -1,0 +1,12 @@
+name: Format Check
+
+on: [push, pull_request]
+jobs:
+  run-format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: cp .env.example .env
+      - run: bun install
+      - run: bun run format
