@@ -1,4 +1,4 @@
-import database from "~/infra/database";
+import orquestrator from "~/infra/orquestrator";
 
 describe("delete /api/v1/migrations", () => {
   describe("Anonymous user", () => {
@@ -18,7 +18,7 @@ describe("delete /api/v1/migrations", () => {
       });
     }
     beforeAll(async () => {
-      await database.sql`DROP SCHEMA public CASCADE; CREATE SCHEMA public;`;
+      await orquestrator.clearDatabase();
     });
     test("Running pending migrations down without migrations to run", async () => {
       response = await getDeleteResponse();

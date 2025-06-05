@@ -1,3 +1,5 @@
+import database from "./database";
+
 async function retry<T>(fn: () => Promise<T>, maxRetries = 30) {
   try {
     process.stdout.write(".");
@@ -7,6 +9,10 @@ async function retry<T>(fn: () => Promise<T>, maxRetries = 30) {
     if (maxRetries <= 0) throw new Error("Max retries exceeded!");
     return retry(fn, maxRetries - 1);
   }
+}
+
+async function clearDatabase() {
+  await database.sql`DROP SCHEMA public CASCADE; CREATE SCHEMA public;`;
 }
 
 async function waitForWebServer() {
@@ -19,4 +25,4 @@ async function waitForWebServer() {
   process.stdout.write("\n\n");
 }
 
-export default { waitForWebServer };
+export default { waitForWebServer, clearDatabase };
