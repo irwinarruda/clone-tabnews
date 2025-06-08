@@ -1,6 +1,17 @@
 import { serverEnv } from "~/config/server-env";
 import database from "~/infra/database";
 
+export interface StatusData {
+  updated_at: string;
+  dependencies: {
+    database: {
+      version: string;
+      max_connections: number;
+      opened_connections: number;
+    };
+  };
+}
+
 type ServerVersion = { server_version: string };
 type MaxConnections = { max_connections: string };
 type OpenedConnections = { count: string };
@@ -23,7 +34,7 @@ async function onGet() {
         opened_connections: parseInt(openedConnections.rows[0].count),
       },
     },
-  };
+  } as StatusData;
 }
 
 export default defineEventHandler(async (event) => {
