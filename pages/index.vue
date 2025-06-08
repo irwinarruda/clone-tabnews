@@ -1,3 +1,5 @@
+<script lang="ts" setup></script>
+
 <template>
   <div>
     <h1>Forum de discussões sobre arquitetura de Front-end</h1>
