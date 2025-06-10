@@ -7,6 +7,7 @@ import {
   type H3Event,
   type HTTPMethod,
 } from "h3";
+import type { Hooks } from "crossws";
 
 interface ErrorEventHandler<
   Request extends EventHandlerRequest = EventHandlerRequest,
@@ -14,17 +15,10 @@ interface ErrorEventHandler<
 > {
   __is_handler__?: true;
   __resolve__?: EventHandlerResolver;
+  __websocket__?: Partial<Hooks>;
   (event: H3Event<Request>, error: unknown): Response;
 }
-type NuxtFunc<
-  Request = EventHandlerRequest,
-  Response = EventHandlerResponse,
-> = EventHandler<
-  Request extends EventHandlerRequest ? Request : EventHandlerRequest,
-  Request extends EventHandlerRequest ? Response : Request
->;
-
-type NuxtErrorFunc<
+type NuxtErrorHandler<
   Request = EventHandlerRequest,
   Response = EventHandlerResponse,
 > = ErrorEventHandler<
@@ -32,36 +26,58 @@ type NuxtErrorFunc<
   Request extends EventHandlerRequest ? Response : Request
 >;
 
+type NuxtHandler<
+  Request = EventHandlerRequest,
+  Response = EventHandlerResponse,
+> = EventHandler<
+  Request extends EventHandlerRequest ? Request : EventHandlerRequest,
+  Request extends EventHandlerRequest ? Response : Request
+>;
+
+type NuxtDefineEventHandler = typeof defineEventHandler;
+
 export type NuxtConnectHandlerOptions<
   Request = EventHandlerRequest,
   Response = EventHandlerResponse,
 > = {
-  onNoMatch?: NuxtFunc<Request, Response>;
-  onError?: NuxtErrorFunc<Request, Response>;
+  onNoMatch?: NuxtHandler<Request, Response>;
+  onError?: NuxtErrorHandler<Request, Response>;
 };
 
 export class NuxtConnect {
+  private endpoints: Map<HTTPMethod, NuxtHandler> = new Map();
+  private middlewares: Set<NuxtHandler> = new Set();
   private allowedMethods = ["GET", "POST", "PATCH", "PUT", "DELETE"] as const;
-  get!: typeof defineEventHandler;
-  post!: typeof defineEventHandler;
-  patch!: typeof defineEventHandler;
-  put!: typeof defineEventHandler;
-  delete!: typeof defineEventHandler;
-  constructor(private map: Map<HTTPMethod, NuxtFunc> = new Map()) {
+  constructor() {
+    type AllowedMethods = (typeof this.allowedMethods)[number];
     for (const method of this.allowedMethods) {
-      const key = method.toLowerCase() as Lowercase<
-        (typeof this.allowedMethods)[number]
-      >;
-      this[key] = ((fun: any) => {
-        this.storeGenericMethod(method, fun);
+      const key = method.toLowerCase() as Lowercase<AllowedMethods>;
+      this[key] = ((handler: any) => {
+        this.storeGenericMethod(method, handler);
         return this;
-      }) as unknown as typeof defineEventHandler;
+      }) as unknown as NuxtDefineEventHandler;
     }
   }
-  private storeGenericMethod(method: HTTPMethod, fun: NuxtFunc) {
-    this.map.set(method, fun);
+  private storeGenericMethod(method: HTTPMethod, handler: NuxtHandler) {
+    const cloneMiddleware = Array.from(this.middlewares);
+    this.middlewares = new Set();
+    this.endpoints.set(method, async (event) => {
+      for (const middleware of cloneMiddleware) {
+        await middleware(event);
+      }
+      return handler(event);
+    });
   }
-  handler(args: NuxtConnectHandlerOptions = {}) {
+  get!: NuxtDefineEventHandler;
+  post!: NuxtDefineEventHandler;
+  patch!: NuxtDefineEventHandler;
+  put!: NuxtDefineEventHandler;
+  delete!: NuxtDefineEventHandler;
+  use<Request, Response>(handler: NuxtHandler<Request, Response>) {
+    this.middlewares.add(handler);
+    return this;
+  }
+  serve(args: NuxtConnectHandlerOptions = {}) {
     return defineEventHandler(async (event) => {
       if (!args.onNoMatch) args.onNoMatch = () => "No Match";
       if (!args.onError)
@@ -70,8 +86,8 @@ export class NuxtConnect {
       try {
         for (const method of this.allowedMethods) {
           if (event.method !== method) continue;
-          const fun = this.map.get(method);
-          if (fun) return await fun(event);
+          const handler = this.endpoints.get(method);
+          if (handler) return await handler(event);
         }
         return await args.onNoMatch(event);
       } catch (err) {

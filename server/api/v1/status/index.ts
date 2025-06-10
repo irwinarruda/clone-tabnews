@@ -41,4 +41,4 @@ router.get(async () => {
   } as StatusData;
 });
 
-export default router.handler(controller.errorHandlers);
+export default router.serve(controller.errorHandlers);

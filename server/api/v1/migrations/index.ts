@@ -44,4 +44,4 @@ router.delete(async (event) => {
   return migrations;
 });
 
-export default router.handler(controller.errorHandlers);
+export default router.serve(controller.errorHandlers);
