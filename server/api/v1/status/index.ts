@@ -1,5 +1,7 @@
 import { serverEnv } from "~/config/server-env";
+import controller from "~/infra/controller";
 import database from "~/infra/database";
+import { createNuxtRouter } from "~/libs/nuxt-connect";
 
 export interface StatusData {
   updated_at: string;
@@ -16,7 +18,9 @@ type ServerVersion = { server_version: string };
 type MaxConnections = { max_connections: string };
 type OpenedConnections = { count: string };
 
-async function onGet() {
+const router = createNuxtRouter();
+
+router.get(async () => {
   const version = await database.sql<ServerVersion>`SHOW server_version;`;
   const maxConnections =
     await database.sql<MaxConnections>`SHOW max_connections;`;
@@ -35,13 +39,6 @@ async function onGet() {
       },
     },
   } as StatusData;
-}
-
-export default defineEventHandler(async (event) => {
-  switch (event.method) {
-    case "GET":
-      return onGet();
-    default:
-      return setResponseStatus(event, 404);
-  }
 });
+
+export default router.serve(controller.errorHandlers);

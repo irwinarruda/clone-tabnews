@@ -5,6 +5,7 @@ import {
   type QueryResultRow,
 } from "pg";
 import { serverEnv } from "~/config/server-env";
+import { ServiceError } from "./errors";
 
 async function sql<R extends QueryResultRow = any, I = any[]>(
   templateString: TemplateStringsArray,
@@ -20,16 +21,23 @@ async function sql<R extends QueryResultRow = any, I = any[]>(
 }
 
 async function getClient() {
-  const client = new Client({
-    port: serverEnv.PgPort,
-    host: serverEnv.PgHost,
-    user: serverEnv.PgUser,
-    database: serverEnv.PgDatabase,
-    password: serverEnv.PgPassword,
-    ssl: serverEnv.PgSSL,
-  });
-  await client.connect();
-  return client;
+  try {
+    const client = new Client({
+      port: serverEnv.PgPort,
+      host: serverEnv.PgHost,
+      user: serverEnv.PgUser,
+      database: serverEnv.PgDatabase,
+      password: serverEnv.PgPassword,
+      ssl: serverEnv.PgSSL,
+    });
+    await client.connect();
+    return client;
+  } catch (err) {
+    throw new ServiceError(
+      err as Error,
+      "Erro na conexão com o banco ou na query.",
+    );
+  }
 }
 
 function parseTemplate(templateString: TemplateStringsArray) {
