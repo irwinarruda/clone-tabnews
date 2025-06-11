@@ -1,35 +1,16 @@
-import { runner } from "node-pg-migrate";
-import database from "~/infra/database";
-import { pathEnv } from "~/config/path-env";
-import type { MigrationDirection } from "node-pg-migrate/runner";
 import { createNuxtRouter } from "~/libs/nuxt-connect";
 import controller from "~/infra/controller";
-
-async function migrate(dryRun: boolean, direction: MigrationDirection = "up") {
-  const client = await database.getClient();
-  try {
-    const migrations = await runner({
-      dbClient: client,
-      dir: pathEnv.migrations,
-      migrationsTable: "pgmigrations",
-      direction: direction,
-      dryRun: dryRun,
-    });
-    return migrations;
-  } finally {
-    await client.end();
-  }
-}
+import migrator from "~/models/migrator";
 
 const router = createNuxtRouter();
 
 router.get(async () => {
-  const migrations = await migrate(true);
+  const migrations = await migrator.listPendingMigrations();
   return migrations;
 });
 
 router.post(async (event) => {
-  const migrations = await migrate(false);
+  const migrations = await migrator.runPendingMigrations();
   if (migrations.length > 0) {
     setResponseStatus(event, 201);
   }
@@ -37,7 +18,7 @@ router.post(async (event) => {
 });
 
 router.delete(async (event) => {
-  const migrations = await migrate(false, "down");
+  const migrations = await migrator.resetMigrations();
   if (migrations.length === 0) {
     setResponseStatus(event, 204);
   }
