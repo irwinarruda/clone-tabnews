@@ -12,6 +12,7 @@ const errorHandlers: NuxtConnectHandlerOptions = {
     return responseError.toJSON();
   },
   onError(event, error) {
+    console.error(error);
     let statusCode: number | undefined;
     if (error instanceof ServiceError) {
       statusCode = error.statusCode;
