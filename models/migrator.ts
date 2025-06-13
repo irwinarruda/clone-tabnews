@@ -12,6 +12,7 @@ async function migrate(dryRun: boolean, direction: MigrationDirection) {
       dir: pathEnv.migrations,
       migrationsTable: "pgmigrations",
       direction: direction,
+      log: () => void 0,
       dryRun: dryRun,
     });
     return migrations;
