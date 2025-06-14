@@ -4,19 +4,6 @@ describe("delete /api/v1/migrations", () => {
   describe("Anonymous user", () => {
     let response: Response;
     let body: any;
-    async function getGetResponse() {
-      return fetch("http://localhost:3000/api/v1/migrations");
-    }
-    async function getPostResponse() {
-      return fetch("http://localhost:3000/api/v1/migrations", {
-        method: "POST",
-      });
-    }
-    async function getDeleteResponse() {
-      return fetch("http://localhost:3000/api/v1/migrations", {
-        method: "DELETE",
-      });
-    }
     beforeAll(async () => {
       await orquestrator.clearDatabase();
     });
@@ -34,3 +21,17 @@ describe("delete /api/v1/migrations", () => {
     });
   });
 });
+
+async function getGetResponse() {
+  return fetch("http://localhost:3000/api/v1/migrations");
+}
+async function getPostResponse() {
+  return fetch("http://localhost:3000/api/v1/migrations", {
+    method: "POST",
+  });
+}
+async function getDeleteResponse() {
+  return fetch("http://localhost:3000/api/v1/migrations", {
+    method: "DELETE",
+  });
+}
