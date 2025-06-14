@@ -1,5 +1,5 @@
 import database from "~/infra/database";
-import { ValidationError } from "~/infra/errors";
+import { NotFoundError, ValidationError } from "~/infra/errors";
 
 type CreateUserDTO = {
   username: string;
@@ -35,4 +35,20 @@ async function create(userData: CreateUserDTO) {
   return userRows.rows[0];
 }
 
-export default { create };
+async function findByUsername(username?: string) {
+  if (!username) {
+    throw new ValidationError("Por favor envie um usuário válido");
+  }
+  const userRows = await database.sql`
+    SELECT * FROM users WHERE LOWER(username) = LOWER(${username}) LIMIT 1;
+  `;
+  if (!userRows.rowCount) {
+    throw new NotFoundError(
+      "O usuário informado não existe.",
+      "Utilize outro nome de usuário para realizar a busca.",
+    );
+  }
+  return userRows.rows[0];
+}
+
+export default { create, findByUsername };

@@ -4,6 +4,7 @@ import {
   ServiceError,
   MethodNotAllowedError,
   ValidationError,
+  NotFoundError,
 } from "./errors";
 
 const errorHandlers: NuxtConnectHandlerOptions = {
@@ -14,6 +15,10 @@ const errorHandlers: NuxtConnectHandlerOptions = {
   },
   onError(event, error) {
     if (error instanceof ValidationError) {
+      setResponseStatus(event, error.statusCode);
+      return error.toJSON();
+    }
+    if (error instanceof NotFoundError) {
       setResponseStatus(event, error.statusCode);
       return error.toJSON();
     }
