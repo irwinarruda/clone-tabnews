@@ -4,11 +4,6 @@ describe("post /api/v1/migrations", () => {
   describe("Anonymous user", () => {
     let response: Response;
     let body: any;
-    async function getResponse() {
-      return fetch("http://localhost:3000/api/v1/migrations", {
-        method: "POST",
-      });
-    }
     beforeAll(async () => {
       await orquestrator.clearDatabase();
     });
@@ -25,3 +20,9 @@ describe("post /api/v1/migrations", () => {
     });
   });
 });
+
+async function getResponse() {
+  return fetch("http://localhost:3000/api/v1/migrations", {
+    method: "POST",
+  });
+}

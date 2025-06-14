@@ -3,6 +3,8 @@ import {
   InternalServerError,
   ServiceError,
   MethodNotAllowedError,
+  ValidationError,
+  NotFoundError,
 } from "./errors";
 
 const errorHandlers: NuxtConnectHandlerOptions = {
@@ -12,6 +14,15 @@ const errorHandlers: NuxtConnectHandlerOptions = {
     return responseError.toJSON();
   },
   onError(event, error) {
+    if (error instanceof ValidationError) {
+      setResponseStatus(event, error.statusCode);
+      return error.toJSON();
+    }
+    if (error instanceof NotFoundError) {
+      setResponseStatus(event, error.statusCode);
+      return error.toJSON();
+    }
+    console.error(error);
     let statusCode: number | undefined;
     if (error instanceof ServiceError) {
       statusCode = error.statusCode;
