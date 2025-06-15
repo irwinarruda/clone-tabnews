@@ -44,7 +44,9 @@ describe("post /api/v1/users", () => {
       expect(response.status).toBe(400);
       expect(body.name).toBe("ValidationError");
       expect(body.message).toBe("O email informado já está sendo utilizado.");
-      expect(body.action).toBe("Utilize outro email para realizar o cadastro.");
+      expect(body.action).toBe(
+        "Utilize outro email para realizar esta operação.",
+      );
     });
     test("with duplicate username", async () => {
       const user = getBaseUser();
@@ -55,7 +57,7 @@ describe("post /api/v1/users", () => {
       expect(body.name).toBe("ValidationError");
       expect(body.message).toBe("O usuário informado já está sendo utilizado.");
       expect(body.action).toBe(
-        "Utilize outro nome de usuário para realizar o cadastro.",
+        "Utilize outro nome de usuário para realizar esta operação.",
       );
     });
   });
