@@ -1,5 +1,6 @@
 import database from "~/infra/database";
 import { NotFoundError, ValidationError } from "~/infra/errors";
+import password from "~/models/password";
 
 type CreateUserDTO = {
   username: string;
@@ -8,7 +9,6 @@ type CreateUserDTO = {
 };
 
 async function create(userData: CreateUserDTO) {
-  // I could do LIMIT 1 here but want to only do that if needed
   const emailRows = await database.sql`
     SELECT email FROM users WHERE LOWER(email) = LOWER(${userData.email});
   `;
@@ -27,6 +27,7 @@ async function create(userData: CreateUserDTO) {
       "Utilize outro nome de usuário para realizar o cadastro.",
     );
   }
+  userData.password = await password.generateHash(userData.password);
   const userRows = await database.sql`
     INSERT INTO users (username, email, password)
     VALUES (${userData.username}, ${userData.email}, ${userData.password})
