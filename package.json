@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "@nuxt/icon": "1.13.0",
+    "bcryptjs": "^3.0.2",
     "eslint": "^9.28.0",
     "node-pg-migrate": "8.0.1",
     "nuxt": "^3.17.5",

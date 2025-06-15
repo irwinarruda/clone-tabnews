@@ -6,4 +6,6 @@ export const serverEnv = {
   PgPassword: import.meta.env.POSTGRES_PASSWORD,
   PgSSL: import.meta.env.POSTGRES_SSL === "true",
   PgDatabaseUrl: import.meta.env.DATABASE_URL,
+  PasswordPepper: import.meta.env.PASSWORD_PEPPER,
+  PasswordRounds: parseInt(import.meta.env.PASSWORD_ROUNDS ?? "1"),
 };

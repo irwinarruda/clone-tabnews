@@ -34,6 +34,7 @@ describe("get /api/v1/users/[username]", () => {
       response = await getResponse("none_existing_user");
       body = await response.json();
       expect(response.status).toBe(404);
+      expect(body.name).toBe("NotFoundError");
       expect(body.message).toBe("O usuário informado não existe.");
       expect(body.action).toBe(
         "Utilize outro nome de usuário para realizar a busca.",

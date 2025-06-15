@@ -10,4 +10,11 @@ router.get(async (event) => {
   return fetchedUser;
 });
 
+router.patch(async (event) => {
+  const username = getRouterParam(event, "username");
+  const body = await readBody(event);
+  const updatedUser = await user.update(username, body);
+  return updatedUser;
+});
+
 export default router.serve(controller.errorHandlers);
