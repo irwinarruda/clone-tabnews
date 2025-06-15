@@ -10,8 +10,7 @@ describe("patch /api/v1/users/[username]", () => {
       await orquestrator.runPendingMigrations();
     });
     test("with non existing user", async () => {
-      const user = getBaseUser();
-      response = await getResponse(user.username, user);
+      response = await getResponse("TestUser", {});
       body = await response.json();
       expect(response.status).toBe(404);
       expect(body.name).toBe("NotFoundError");
@@ -21,14 +20,16 @@ describe("patch /api/v1/users/[username]", () => {
       );
     });
     test("with existing username", async () => {
-      const user = getBaseUser();
-      await createUserResponse(user);
-      user.username = "TestUser2";
-      user.email = "testuser2@example.com";
-      await createUserResponse(user);
+      await orquestrator.createUser({
+        username: "TestUser",
+        email: "testuser@example.com",
+      });
+      await orquestrator.createUser({
+        username: "TestUser2",
+        email: "testuser2@example.com",
+      });
       const username = "TestUser2";
-      user.username = "TestUser";
-      response = await getResponse(user.username, { username });
+      response = await getResponse("TestUser", { username });
       body = await response.json();
       expect(response.status).toBe(400);
       expect(body.name).toBe("ValidationError");
@@ -38,9 +39,8 @@ describe("patch /api/v1/users/[username]", () => {
       );
     });
     test("with existing email", async () => {
-      const user = getBaseUser();
       const email = "testuser2@example.com";
-      response = await getResponse(user.username, { email });
+      response = await getResponse("TestUser", { email });
       body = await response.json();
       expect(response.status).toBe(400);
       expect(body.name).toBe("ValidationError");
@@ -50,17 +50,15 @@ describe("patch /api/v1/users/[username]", () => {
       );
     });
     test("with the same username", async () => {
-      const user = getBaseUser();
-      const username = user.username.toUpperCase();
+      const username = "TestUser".toUpperCase();
       response = await getResponse(username, { username });
       body = await response.json();
       expect(response.status).toBe(200);
       expect(body).not.toHaveProperty("name");
     });
     test("with unique username", async () => {
-      const user = getBaseUser();
       const username = "TestUser3";
-      response = await getResponse(user.username, { username });
+      response = await getResponse("TestUser", { username });
       body = await response.json();
       expect(response.status).toBe(200);
       expect(body.username).toBe(username);
@@ -88,27 +86,9 @@ describe("patch /api/v1/users/[username]", () => {
   });
 });
 
-function getBaseUser() {
-  return {
-    username: "TestUser",
-    email: "testuser@example.com",
-    password: "password123",
-  };
-}
-
 async function getResponse(username: string, user: any) {
   return fetch(`http://localhost:3000/api/v1/users/${username}`, {
     method: "PATCH",
-    body: JSON.stringify(user),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-}
-
-async function createUserResponse(user: any) {
-  return fetch("http://localhost:3000/api/v1/users", {
-    method: "POST",
     body: JSON.stringify(user),
     headers: {
       "Content-Type": "application/json",

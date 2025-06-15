@@ -12,7 +12,11 @@ describe("post /api/v1/users", () => {
       await orquestrator.runPendingMigrations();
     });
     test("with unique and valid data", async () => {
-      const user = getBaseUser();
+      const user = {
+        username: "TestUser",
+        email: "testuser@example.com",
+        password: "password123",
+      };
       response = await getResponse(user);
       body = await response.json();
       expect(response.status).toBe(201);
@@ -36,10 +40,11 @@ describe("post /api/v1/users", () => {
       expect(isValidPassword).toBe(false);
     });
     test("with duplicate email", async () => {
-      const user = getBaseUser();
-      user.username = "Other TestUser";
-      user.email = "Testuser@examplE.com";
-      response = await getResponse(user);
+      response = await getResponse({
+        username: "Other TestUser",
+        email: "Testuser@examplE.com",
+        password: "password123",
+      });
       body = await response.json();
       expect(response.status).toBe(400);
       expect(body.name).toBe("ValidationError");
@@ -49,9 +54,11 @@ describe("post /api/v1/users", () => {
       );
     });
     test("with duplicate username", async () => {
-      const user = getBaseUser();
-      user.email = "testuser1@example.com";
-      response = await getResponse(user);
+      response = await getResponse({
+        username: "TestUser",
+        email: "testuser1@example.com",
+        password: "password123",
+      });
       body = await response.json();
       expect(response.status).toBe(400);
       expect(body.name).toBe("ValidationError");
@@ -62,14 +69,6 @@ describe("post /api/v1/users", () => {
     });
   });
 });
-
-function getBaseUser() {
-  return {
-    username: "TestUser",
-    email: "testuser@example.com",
-    password: "password123",
-  };
-}
 
 async function getResponse(user: any) {
   return fetch("http://localhost:3000/api/v1/users", {
