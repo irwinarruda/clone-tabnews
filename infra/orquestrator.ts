@@ -1,3 +1,4 @@
+import migrator from "~/models/migrator";
 import database from "./database";
 
 async function retry<T>(fn: () => Promise<T>, maxRetries = 30) {
@@ -11,10 +12,6 @@ async function retry<T>(fn: () => Promise<T>, maxRetries = 30) {
   }
 }
 
-async function clearDatabase() {
-  await database.sql`DROP SCHEMA public CASCADE; CREATE SCHEMA public;`;
-}
-
 async function waitForWebServer() {
   process.stdout.write("\n🟨 Waiting for webserver");
   async function checkWebServer() {
@@ -25,4 +22,12 @@ async function waitForWebServer() {
   process.stdout.write("\n\n");
 }
 
-export default { waitForWebServer, clearDatabase };
+async function clearDatabase() {
+  await database.sql`DROP SCHEMA public CASCADE; CREATE SCHEMA public;`;
+}
+
+async function runPendingMigrations() {
+  await migrator.runPendingMigrations();
+}
+
+export default { waitForWebServer, clearDatabase, runPendingMigrations };

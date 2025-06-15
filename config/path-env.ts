@@ -10,5 +10,5 @@ export const pathEnv = {
   migrations:
     import.meta.env.VERCEL === "1"
       ? path.resolve(__dirname, "infra", "migrations")
-      : path.resolve(__dirname, "..", "..", "infra", "migrations"),
+      : path.resolve(process.cwd(), "infra", "migrations"),
 };
