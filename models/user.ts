@@ -2,6 +2,13 @@ import database from "~/infra/database";
 import { NotFoundError, ValidationError } from "~/infra/errors";
 import password from "~/models/password";
 
+type PublicUser = {
+  id: string;
+  username: string;
+  email: string;
+  password: string;
+};
+
 type CreateUserDTO = {
   username: string;
   email: string;
@@ -17,7 +24,7 @@ async function create(userData: CreateUserDTO) {
     VALUES (${userData.username}, ${userData.email}, ${userData.password})
     RETURNING *;
   `;
-  return userRows.rows[0];
+  return userRows.rows[0] as PublicUser;
 }
 
 type UpdateUserDTO = {
@@ -52,7 +59,7 @@ async function update(username: string | undefined, userData: UpdateUserDTO) {
     WHERE id = ${currentUser.id}
     RETURNING *;
   `;
-  return userRows.rows[0];
+  return userRows.rows[0] as PublicUser;
 }
 
 async function findByUsername(username?: string) {
@@ -66,7 +73,7 @@ async function findByUsername(username?: string) {
       "Utilize outro nome de usuário para realizar a busca.",
     );
   }
-  return userRows.rows[0];
+  return userRows.rows[0] as PublicUser;
 }
 
 async function ensureUniqueEmail(email: string) {

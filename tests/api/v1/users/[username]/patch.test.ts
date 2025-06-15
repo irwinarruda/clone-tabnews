@@ -20,14 +20,8 @@ describe("patch /api/v1/users/[username]", () => {
       );
     });
     test("with existing username", async () => {
-      await orquestrator.createUser({
-        username: "TestUser",
-        email: "testuser@example.com",
-      });
-      await orquestrator.createUser({
-        username: "TestUser2",
-        email: "testuser2@example.com",
-      });
+      await orquestrator.createUser({ username: "TestUser" });
+      await orquestrator.createUser({ username: "TestUser2" });
       const username = "TestUser2";
       response = await getResponse("TestUser", { username });
       body = await response.json();
@@ -39,8 +33,12 @@ describe("patch /api/v1/users/[username]", () => {
       );
     });
     test("with existing email", async () => {
+      const user = await orquestrator.createUser({
+        email: "testuser@example.com",
+      });
+      await orquestrator.createUser({ email: "testuser2@example.com" });
       const email = "testuser2@example.com";
-      response = await getResponse("TestUser", { email });
+      response = await getResponse(user.username, { email });
       body = await response.json();
       expect(response.status).toBe(400);
       expect(body.name).toBe("ValidationError");
@@ -50,31 +48,35 @@ describe("patch /api/v1/users/[username]", () => {
       );
     });
     test("with the same username", async () => {
-      const username = "TestUser".toUpperCase();
+      await orquestrator.createUser({ username: "SameUsername" });
+      const username = "SameUsername".toUpperCase();
       response = await getResponse(username, { username });
       body = await response.json();
       expect(response.status).toBe(200);
       expect(body).not.toHaveProperty("name");
     });
     test("with unique username", async () => {
-      const username = "TestUser3";
-      response = await getResponse("TestUser", { username });
+      const user = await orquestrator.createUser();
+      const username = "UniqueUsername";
+      response = await getResponse(user.username, { username });
       body = await response.json();
       expect(response.status).toBe(200);
       expect(body.username).toBe(username);
       expect(body.updated_at > body.created_at).toBe(true);
     });
     test("with unique email", async () => {
-      const email = "testuser3@example.com";
-      response = await getResponse("TestUser3", { email });
+      const user = await orquestrator.createUser();
+      const email = "uniqueEmail@example.com";
+      response = await getResponse(user.username, { email });
       body = await response.json();
       expect(response.status).toBe(200);
       expect(body.email).toBe(email);
       expect(body.updated_at > body.created_at).toBe(true);
     });
     test("with different password", async () => {
+      const user = await orquestrator.createUser();
       const password = "passwordDifferent";
-      response = await getResponse("TestUser3", { password });
+      response = await getResponse(user.username, { password });
       body = await response.json();
       expect(response.status).toBe(200);
       expect(body.password).not.toBe(password);
