@@ -61,6 +61,29 @@ export class ValidationError extends Error {
   }
 }
 
+export class UnauthorizedError extends Error {
+  action: string;
+  statusCode: number;
+  constructor(
+    message = "Os dados de autenticação não conferem.",
+    action = "Por favor revise os dados e tente novamente.",
+    cause?: Error,
+  ) {
+    super(message, { cause });
+    this.name = "UnauthorizedError";
+    this.action = action;
+    this.statusCode = 401;
+  }
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      action: this.action,
+      status_code: this.statusCode,
+    };
+  }
+}
+
 export class NotFoundError extends Error {
   action: string;
   statusCode: number;
@@ -103,4 +126,14 @@ export class MethodNotAllowedError extends Error {
       status_code: this.statusCode,
     };
   }
+}
+
+export function isIntendedError(
+  err: unknown,
+): err is NotFoundError | UnauthorizedError | ValidationError {
+  return (
+    err instanceof NotFoundError ||
+    err instanceof UnauthorizedError ||
+    err instanceof ValidationError
+  );
 }
