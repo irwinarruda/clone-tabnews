@@ -2,7 +2,7 @@ import database from "~/infra/database";
 import { NotFoundError, ValidationError } from "~/infra/errors";
 import password from "~/models/password";
 
-type PublicUser = {
+export type PublicUser = {
   id: string;
   username: string;
   email: string;
@@ -76,6 +76,20 @@ async function findByUsername(username?: string) {
   return userRows.rows[0] as PublicUser;
 }
 
+async function findByEmail(email?: string) {
+  if (!email) throw new ValidationError("Por favor envie um email válido");
+  const userRows = await database.sql`
+    SELECT * FROM users WHERE LOWER(email) = LOWER(${email}) LIMIT 1;
+  `;
+  if (!userRows.rowCount) {
+    throw new NotFoundError(
+      "O usuário informado não existe.",
+      "Utilize outro nome de usuário para realizar a busca.",
+    );
+  }
+  return userRows.rows[0] as PublicUser;
+}
+
 async function ensureUniqueEmail(email: string) {
   const emailRows = await database.sql`
     SELECT email FROM users WHERE LOWER(email) = LOWER(${email});
@@ -100,4 +114,4 @@ async function ensureUniqueUsername(username: string) {
   }
 }
 
-export default { create, update, findByUsername };
+export default { create, update, findByEmail, findByUsername };

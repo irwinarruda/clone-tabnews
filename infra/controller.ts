@@ -5,6 +5,7 @@ import {
   MethodNotAllowedError,
   ValidationError,
   NotFoundError,
+  UnauthorizedError,
 } from "./errors";
 
 const errorHandlers: NuxtConnectHandlerOptions = {
@@ -19,6 +20,10 @@ const errorHandlers: NuxtConnectHandlerOptions = {
       return error.toJSON();
     }
     if (error instanceof NotFoundError) {
+      setResponseStatus(event, error.statusCode);
+      return error.toJSON();
+    }
+    if (error instanceof UnauthorizedError) {
       setResponseStatus(event, error.statusCode);
       return error.toJSON();
     }

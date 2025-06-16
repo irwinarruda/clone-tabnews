@@ -8,4 +8,5 @@ export const serverEnv = {
   PgDatabaseUrl: import.meta.env.DATABASE_URL,
   PasswordPepper: import.meta.env.PASSWORD_PEPPER ?? "",
   PasswordRounds: parseInt(import.meta.env.PASSWORD_ROUNDS ?? "1"),
+  Mode: import.meta.env.MODE as "production" | "development",
 };
