@@ -10,8 +10,7 @@ describe("patch /api/v1/users/[username]", () => {
       await orquestrator.runPendingMigrations();
     });
     test("with non existing user", async () => {
-      const user = getBaseUser();
-      response = await getResponse(user.username, user);
+      response = await getResponse("TestUser", {});
       body = await response.json();
       expect(response.status).toBe(404);
       expect(body.name).toBe("NotFoundError");
@@ -21,14 +20,10 @@ describe("patch /api/v1/users/[username]", () => {
       );
     });
     test("with existing username", async () => {
-      const user = getBaseUser();
-      await createUserResponse(user);
-      user.username = "TestUser2";
-      user.email = "testuser2@example.com";
-      await createUserResponse(user);
+      await orquestrator.createUser({ username: "TestUser" });
+      await orquestrator.createUser({ username: "TestUser2" });
       const username = "TestUser2";
-      user.username = "TestUser";
-      response = await getResponse(user.username, { username });
+      response = await getResponse("TestUser", { username });
       body = await response.json();
       expect(response.status).toBe(400);
       expect(body.name).toBe("ValidationError");
@@ -38,7 +33,10 @@ describe("patch /api/v1/users/[username]", () => {
       );
     });
     test("with existing email", async () => {
-      const user = getBaseUser();
+      const user = await orquestrator.createUser({
+        email: "testuser@example.com",
+      });
+      await orquestrator.createUser({ email: "testuser2@example.com" });
       const email = "testuser2@example.com";
       response = await getResponse(user.username, { email });
       body = await response.json();
@@ -50,16 +48,16 @@ describe("patch /api/v1/users/[username]", () => {
       );
     });
     test("with the same username", async () => {
-      const user = getBaseUser();
-      const username = user.username.toUpperCase();
+      await orquestrator.createUser({ username: "SameUsername" });
+      const username = "SameUsername".toUpperCase();
       response = await getResponse(username, { username });
       body = await response.json();
       expect(response.status).toBe(200);
       expect(body).not.toHaveProperty("name");
     });
     test("with unique username", async () => {
-      const user = getBaseUser();
-      const username = "TestUser3";
+      const user = await orquestrator.createUser();
+      const username = "UniqueUsername";
       response = await getResponse(user.username, { username });
       body = await response.json();
       expect(response.status).toBe(200);
@@ -67,16 +65,18 @@ describe("patch /api/v1/users/[username]", () => {
       expect(body.updated_at > body.created_at).toBe(true);
     });
     test("with unique email", async () => {
-      const email = "testuser3@example.com";
-      response = await getResponse("TestUser3", { email });
+      const user = await orquestrator.createUser();
+      const email = "uniqueEmail@example.com";
+      response = await getResponse(user.username, { email });
       body = await response.json();
       expect(response.status).toBe(200);
       expect(body.email).toBe(email);
       expect(body.updated_at > body.created_at).toBe(true);
     });
     test("with different password", async () => {
+      const user = await orquestrator.createUser();
       const password = "passwordDifferent";
-      response = await getResponse("TestUser3", { password });
+      response = await getResponse(user.username, { password });
       body = await response.json();
       expect(response.status).toBe(200);
       expect(body.password).not.toBe(password);
@@ -88,27 +88,9 @@ describe("patch /api/v1/users/[username]", () => {
   });
 });
 
-function getBaseUser() {
-  return {
-    username: "TestUser",
-    email: "testuser@example.com",
-    password: "password123",
-  };
-}
-
 async function getResponse(username: string, user: any) {
   return fetch(`http://localhost:3000/api/v1/users/${username}`, {
     method: "PATCH",
-    body: JSON.stringify(user),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-}
-
-async function createUserResponse(user: any) {
-  return fetch("http://localhost:3000/api/v1/users", {
-    method: "POST",
     body: JSON.stringify(user),
     headers: {
       "Content-Type": "application/json",

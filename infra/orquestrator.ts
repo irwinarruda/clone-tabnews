@@ -1,5 +1,7 @@
 import migrator from "~/models/migrator";
+import user from "~/models/user";
 import database from "./database";
+import { faker } from "@faker-js/faker";
 
 async function retry<T>(fn: () => Promise<T>, maxRetries = 30) {
   try {
@@ -30,4 +32,23 @@ async function runPendingMigrations() {
   await migrator.runPendingMigrations();
 }
 
-export default { waitForWebServer, clearDatabase, runPendingMigrations };
+async function createUser(newUser?: {
+  username?: string;
+  email?: string;
+  password?: string;
+}) {
+  if (!newUser) newUser = {};
+  return user.create({
+    username:
+      newUser.username ?? faker.internet.username().replace(/[_.-]/g, ""),
+    email: newUser.email ?? faker.internet.email(),
+    password: newUser.password ?? "validpassword",
+  });
+}
+
+export default {
+  waitForWebServer,
+  clearDatabase,
+  runPendingMigrations,
+  createUser,
+};

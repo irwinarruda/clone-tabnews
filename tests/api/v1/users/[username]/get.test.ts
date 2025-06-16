@@ -10,8 +10,7 @@ describe("get /api/v1/users/[username]", () => {
   });
   describe("Anonymous user", () => {
     test("with exact case match", async () => {
-      const user = getBaseUser();
-      await createUserResponse(user);
+      const user = await orquestrator.createUser();
       response = await getResponse(user.username);
       body = await response.json();
       expect(response.status).toBe(200);
@@ -21,8 +20,8 @@ describe("get /api/v1/users/[username]", () => {
       expect(version(body.id)).toBe(4);
     });
     test("with wrong case match", async () => {
-      const user = getBaseUser();
-      user.username = "TESTUSER";
+      const user = await orquestrator.createUser();
+      user.username = user.username.toUpperCase();
       response = await getResponse(user.username);
       body = await response.json();
       expect(response.status).toBe(200);
@@ -43,24 +42,6 @@ describe("get /api/v1/users/[username]", () => {
   });
 });
 
-function getBaseUser() {
-  return {
-    username: "TestUser",
-    email: "testuser@example.com",
-    password: "password123",
-  };
-}
-
 async function getResponse(username: string) {
   return fetch(`http://localhost:3000/api/v1/users/${username}`);
-}
-
-async function createUserResponse(user: any) {
-  return fetch("http://localhost:3000/api/v1/users", {
-    method: "POST",
-    body: JSON.stringify(user),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
 }
