@@ -1,4 +1,5 @@
 import migrator from "~/models/migrator";
+import session from "~/models/session";
 import user from "~/models/user";
 import database from "./database";
 import { faker } from "@faker-js/faker";
@@ -46,9 +47,14 @@ async function createUser(newUser?: {
   });
 }
 
+async function createSession(userId: string) {
+  return session.create(userId);
+}
+
 export default {
   waitForWebServer,
   clearDatabase,
   runPendingMigrations,
   createUser,
+  createSession,
 };

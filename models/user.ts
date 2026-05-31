@@ -7,6 +7,8 @@ export type PublicUser = {
   username: string;
   email: string;
   password: string;
+  created_at: Date;
+  updated_at: Date;
 };
 
 type CreateUserDTO = {
@@ -90,6 +92,20 @@ async function findByEmail(email?: string) {
   return userRows.rows[0] as PublicUser;
 }
 
+async function findById(id?: string) {
+  if (!id) throw new ValidationError("Por favor envie um id válido");
+  const userRows = await database.sql`
+    SELECT * FROM users WHERE id = ${id} LIMIT 1;
+  `;
+  if (!userRows.rowCount) {
+    throw new NotFoundError(
+      "O usuário informado não existe.",
+      "Utilize outro nome de usuário para realizar a busca.",
+    );
+  }
+  return userRows.rows[0] as PublicUser;
+}
+
 async function ensureUniqueEmail(email: string) {
   const emailRows = await database.sql`
     SELECT email FROM users WHERE LOWER(email) = LOWER(${email});
@@ -114,4 +130,4 @@ async function ensureUniqueUsername(username: string) {
   }
 }
 
-export default { create, update, findByEmail, findByUsername };
+export default { create, update, findByEmail, findByUsername, findById };
