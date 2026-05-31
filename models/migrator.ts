@@ -1,21 +1,30 @@
 import { runner } from "node-pg-migrate";
 import type { MigrationDirection } from "node-pg-migrate/runner";
-import { pathEnv } from "~/config/path-env";
 import database from "~/infra/database";
 import { ServiceError } from "~/infra/errors";
+import { migrationsDir } from "~/infra/paths";
 
-async function migrate(dryRun: boolean, direction: MigrationDirection) {
+type MigrateOptions = {
+  count?: number;
+};
+
+async function migrate(
+  dryRun: boolean,
+  direction: MigrationDirection,
+  options?: MigrateOptions,
+) {
   const client = await database.getClient();
   try {
-    const migrations = await runner({
+    return await runner({
       dbClient: client,
-      dir: pathEnv.migrations,
+      dir: migrationsDir(),
       migrationsTable: "pgmigrations",
-      direction: direction,
+      direction,
+      noLock: true,
       log: () => void 0,
-      dryRun: dryRun,
+      dryRun,
+      ...(options?.count !== undefined && { count: options.count }),
     });
-    return migrations;
   } catch (err) {
     throw new ServiceError(err as Error, "Error running migrations.");
   } finally {
@@ -24,18 +33,17 @@ async function migrate(dryRun: boolean, direction: MigrationDirection) {
 }
 
 async function listPendingMigrations() {
-  const migrations = await migrate(true, "up");
-  return migrations;
+  return migrate(true, "up");
 }
 
 async function runPendingMigrations() {
-  const migrations = await migrate(false, "up");
-  return migrations;
+  return migrate(false, "up");
 }
 
 async function resetMigrations() {
-  const migrations = await migrate(false, "down");
-  return migrations;
+  const toRollback = await migrate(true, "down");
+  if (toRollback.length === 0) return [];
+  return migrate(false, "down", { count: toRollback.length });
 }
 
 export default {

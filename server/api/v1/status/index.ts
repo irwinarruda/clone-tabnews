@@ -28,17 +28,28 @@ router.get(async () => {
     SELECT COUNT(*) FROM pg_stat_activity
     WHERE datname = ${serverEnv.PgDatabase};
   `;
+  const versionRow = version.rows[0];
+  const maxConnectionsRow = maxConnections.rows[0];
+  const openedConnectionsRow = openedConnections.rows[0];
+
+  if (!versionRow || !maxConnectionsRow || !openedConnectionsRow) {
+    throw createError({
+      statusCode: 503,
+      message: "Could not read database status.",
+    });
+  }
+
   const updatedAt = new Date().toISOString();
   return {
     updated_at: updatedAt,
     dependencies: {
       database: {
-        version: version.rows[0].server_version,
-        max_connections: parseInt(maxConnections.rows[0].max_connections),
-        opened_connections: parseInt(openedConnections.rows[0].count),
+        version: versionRow.server_version,
+        max_connections: parseInt(maxConnectionsRow.max_connections),
+        opened_connections: parseInt(openedConnectionsRow.count),
       },
     },
-  } as StatusData;
+  };
 });
 
 export default router.serve(controller.errorHandlers);

@@ -83,7 +83,9 @@ function getStyleForStatus(status: Status, styleType: keyof typeof styles) {
             <span
               >Last updated:
               {{
-                data ? new Date(data.updated_at).toLocaleString() : "Unknown"
+                data
+                  ? new Date(data.updated_at).toLocaleString("pt-BR")
+                  : "Unknown"
               }}</span
             >
           </div>
