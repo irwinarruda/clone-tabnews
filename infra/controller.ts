@@ -1,4 +1,7 @@
+import type { H3Event } from "h3";
 import type { NuxtConnectHandlerOptions } from "~/libs/nuxt-connect";
+import { serverEnv } from "~/config/server-env";
+import session from "~/models/session";
 import {
   InternalServerError,
   ServiceError,
@@ -7,6 +10,15 @@ import {
   NotFoundError,
   UnauthorizedError,
 } from "./errors";
+
+function setSessionIdCookie(event: H3Event, sessionToken: string) {
+  setCookie(event, "session_id", sessionToken, {
+    path: "/",
+    maxAge: session.EXPIRATION_DATE_IN_SECONDS,
+    httpOnly: true,
+    secure: serverEnv.Mode === "production",
+  });
+}
 
 const errorHandlers: NuxtConnectHandlerOptions = {
   onNoMatch(event) {
@@ -24,6 +36,7 @@ const errorHandlers: NuxtConnectHandlerOptions = {
       return error.toJSON();
     }
     if (error instanceof UnauthorizedError) {
+      deleteCookie(event, "session_id");
       setResponseStatus(event, error.statusCode);
       return error.toJSON();
     }
@@ -38,4 +51,4 @@ const errorHandlers: NuxtConnectHandlerOptions = {
   },
 };
 
-export default { errorHandlers };
+export default { errorHandlers, setSessionIdCookie };
