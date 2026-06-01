@@ -6,8 +6,15 @@ import session from "~/models/session";
 const router = createNuxtRouter();
 
 router.get(async (event) => {
+  setResponseHeader(
+    event,
+    "Cache-Control",
+    "no-store, no-cache, max-age=0, must-revalidate",
+  );
   const sessionId = getCookie(event, "session_id");
   const publicSession = await session.findValidByToken(sessionId);
+  await session.renew(publicSession.id);
+  controller.setSessionIdCookie(event, publicSession.token);
   const userData = await user.findById(publicSession.user_id);
   return userData;
 });
