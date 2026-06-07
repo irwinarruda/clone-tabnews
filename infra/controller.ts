@@ -20,6 +20,14 @@ function setSessionIdCookie(event: H3Event, sessionToken: string) {
   });
 }
 
+function clearSessionIdCookie(event: H3Event) {
+  deleteCookie(event, "session_id", {
+    path: "/",
+    httpOnly: true,
+    secure: serverEnv.Mode === "production",
+  });
+}
+
 const errorHandlers: NuxtConnectHandlerOptions = {
   onNoMatch(event) {
     const responseError = new MethodNotAllowedError();
@@ -36,7 +44,7 @@ const errorHandlers: NuxtConnectHandlerOptions = {
       return error.toJSON();
     }
     if (error instanceof UnauthorizedError) {
-      deleteCookie(event, "session_id");
+      clearSessionIdCookie(event);
       setResponseStatus(event, error.statusCode);
       return error.toJSON();
     }
@@ -51,4 +59,4 @@ const errorHandlers: NuxtConnectHandlerOptions = {
   },
 };
 
-export default { errorHandlers, setSessionIdCookie };
+export default { errorHandlers, setSessionIdCookie, clearSessionIdCookie };

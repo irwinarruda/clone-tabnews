@@ -13,7 +13,7 @@
     "test:watch": "vitest --watch",
     "services:up": "docker compose -f infra/compose.yaml up -d",
     "services:down": "docker compose -f infra/compose.yaml down",
-    "services:ready": "bun services:up && node ./infra/scripts/wait-for-postgres.js && bun migrations:up",
+    "services:ready": "bun services:up && bun ./infra/scripts/wait-for-postgres.js && bun migrations:up",
     "migrations:create": "node-pg-migrate -m infra/migrations create",
     "migrations:up": "node-pg-migrate -m infra/migrations up",
     "migrations:down": "node-pg-migrate -m infra/migrations down",

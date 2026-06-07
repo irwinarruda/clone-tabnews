@@ -17,7 +17,7 @@ router.post(async (event) => {
 router.delete(async (event) => {
   const sessionId = getCookie(event, "session_id");
   await session.remove(sessionId);
-  deleteCookie(event, "session_id");
+  controller.clearSessionIdCookie(event);
   setResponseStatus(event, 204);
 });
 
